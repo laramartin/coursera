@@ -17,7 +17,7 @@ fun better_max(xs: int list) =
   else if null (tl xs)
   then hd xs
   else 
-    let val result = good_max(tl xs)
+    let val result = better_max(tl xs)
     in 
       if hd xs > result 
       then hd xs
