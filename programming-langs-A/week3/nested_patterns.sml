@@ -55,7 +55,7 @@ datatype sign = P | N | Z
 fun multisign (x1, x2) =
   let fun sign x = if x=0 then Z, else if x>0 then P else N 
   in 
-    case (sign x1, sign x2) of 
+    case (sign(x1), sign(x2)) of 
     (Z,Z) => (**)
     | (P,Z) => (**)
     | (N,Z) => (**)
