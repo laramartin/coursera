@@ -39,6 +39,46 @@ all_except_option("a", ["a", "b", "c"]) = SOME ["b", "c"];
 all_except_option("b", ["a", "b", "c"]) = SOME ["a", "c"];
 all_except_option("c", ["a", "b", "c"]) = SOME ["a", "b"];
 
+(* 
+Write a function get_substitutions1, which takes a string list list (a list of 
+list of strings, the substitutions) and a string s and returns a string list. 
+The result has all the strings that are in some list in substitutions that also 
+has s, but s itself should not be in the result. Example:
+get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], "Fred")
+     (* answer: ["Fredrick","Freddie","F"] *)
+
+Assume each list in substitutions has no repeats. The result will have 
+repeats if s and another string are both in more than one list in substitutions.
+
+Example:
+get_substitutions1([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]], "Jeff")
+(* answer: ["Jeffrey","Geoff","Jeffrey"] *)
+Use part (a) and ML’s list-append (@) but no other helper functions. 
+Sample solution is around 6 lines.
+
+ *)
+
+(* string list list * string -> string list *)
+fun get_substitutions1(x, y) = 
+  case x of 
+    [] => []
+    (* | x'::[] => *)
+    | x'::x'' => 
+                    case all_except_option(y, x') of 
+                      NONE => get_substitutions1(x'', y) 
+                      | SOME z => z @ get_substitutions1(x'', y)
+
+  
+get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], "Fred")
+  = ["Fredrick","Freddie","F"];
+get_substitutions1([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]], "Jeff")
+  = ["Jeffrey","Geoff","Jeffrey"];
+get_substitutions1 ([["foo"],["there"]], "foo") = [];
+
+get_substitutions1([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
+get_substitutions1([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
+get_substitutions1([["a", "b"], ["a", "b", "c"], ["b"]], "a") = ["b", "b", "c"];
+get_substitutions1([["a", "b"], ["a", "b", "c"], ["b"]], "z") = []; (* ?? *)
 
 
 
