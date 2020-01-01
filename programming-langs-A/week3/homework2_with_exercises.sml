@@ -62,7 +62,6 @@ Sample solution is around 6 lines.
 fun get_substitutions1(x, y) = 
   case x of 
     [] => []
-    (* | x'::[] => *)
     | x'::x'' => 
                     case all_except_option(y, x') of 
                       NONE => get_substitutions1(x'', y) 
@@ -78,8 +77,32 @@ get_substitutions1 ([["foo"],["there"]], "foo") = [];
 get_substitutions1([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
 get_substitutions1([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
 get_substitutions1([["a", "b"], ["a", "b", "c"], ["b"]], "a") = ["b", "b", "c"];
-get_substitutions1([["a", "b"], ["a", "b", "c"], ["b"]], "z") = []; (* ?? *)
+get_substitutions1([["a", "b"], ["a", "b", "c"], ["b"]], "z") = [];
 
+(* (c) Write a function get_substitutions2, which is like get_substitutions1 
+except it uses a tail-recursive local helper function. *)
+fun get_substitutions2(x, y) = 
+  let fun aux(x, acc) =
+    case x of 
+      [] => acc
+      | x'::x'' => 
+                    case all_except_option(y, x') of 
+                      NONE => aux(x'', acc) 
+                      | SOME z => aux(x'', acc @ z)
+  in 
+    aux(x, [])
+  end
+
+get_substitutions2([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], "Fred")
+  = ["Fredrick","Freddie","F"];
+get_substitutions2([["Fred","Fredrick"],["Jeff","Jeffrey"],["Geoff","Jeff","Jeffrey"]], "Jeff")
+  = ["Jeffrey","Geoff","Jeffrey"];
+get_substitutions2 ([["foo"],["there"]], "foo") = [];
+
+get_substitutions2([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
+get_substitutions2([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
+get_substitutions2([["a", "b"], ["a", "b", "c"], ["b"]], "a") = ["b", "b", "c"];
+get_substitutions2([["a", "b"], ["a", "b", "c"], ["b"]], "z") = [];
 
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
