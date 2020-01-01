@@ -104,6 +104,72 @@ get_substitutions2([["a", "b"], ["a", "c", "d"], ["e"]], "a") = ["b", "c", "d"];
 get_substitutions2([["a", "b"], ["a", "b", "c"], ["b"]], "a") = ["b", "b", "c"];
 get_substitutions2([["a", "b"], ["a", "b", "c"], ["b"]], "z") = [];
 
+(* 
+(d) Write a function similar_names, which takes a string list list 
+of substitutions (as in parts (b) and (c)) and a full name of 
+type {first:string,middle:string,last:string} and returns a list of full 
+names (type {first:string,middle:string,last:string} list). The result is all 
+the full names you can produce by substituting for the first name (and only 
+the first name) using substitutions and parts (b) or (c). The answer should 
+begin with the original name (then have 0 or more other names). Example:
+similar_names([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"})
+     (* answer: [{first="Fred", last="Smith", middle="W"},
+                 {first="Fredrick", last="Smith", middle="W"},
+                 {first="Freddie", last="Smith", middle="W"},
+                 {first="F", last="Smith", middle="W"}] *)
+Do not eliminate duplicates from the answer. Hint: Use a local helper function. 
+Sample solution is around 10 lines.
+*)
+
+type Name = { first: string, middle: string, last: string };
+
+fun process_names(n, y) =
+  case y of
+  {first:string, middle:string, last:string} => 
+    case n of
+      [] => []
+      | n'::n'' => {first=n', middle=middle, last=last} :: process_names(n'', y)
+ ;
+
+(* string list list * name list -> *)
+fun similar_names(x, y) = 
+  case y of 
+    {first, ...} => 
+      y :: process_names(get_substitutions2(x, first), y);
+
+(* get_substitutions2([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], "Fred") 
+= ["Fredrick","Freddie","F"]   
+
+result of similar_names would be: 
+- name 
+- for each result of get_substitutions2
+    first = head of result, middle, and last 
+
+*)
+
+similar_names([], {first="Fred", last="Smith", middle="W"}) 
+  = [{first="Fred",last="Smith",middle="W"}];
+similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
+	    [
+            {first="Fred", last="Smith", middle="W"}, 
+            {first="Fredrick", last="Smith", middle="W"},
+	        {first="Freddie", last="Smith", middle="W"}, 
+            {first="F", last="Smith", middle="W"}
+        ];
+
+similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="", last=""}) =
+	    [
+            {first="Fred", last="", middle=""}, 
+            {first="Fredrick", last="", middle=""},
+	        {first="Freddie", last="", middle=""}, 
+            {first="F", last="", middle=""}
+        ];
+
+similar_names ([["Fred","Fredrick"],["a","b"],["c","d","ef"]], {first="Fred", middle="W", last="Smith"}) =
+	    [
+            {first="Fred", last="Smith", middle="W"}, 
+             {first="Fredrick", last="Smith", middle="W"}
+         ];
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
