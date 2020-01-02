@@ -1,6 +1,6 @@
 (* OPTIONS ARE DATATYPES 
 NONE and SOME are type constructors! They take
-types
+type parameters.
 Better use pattern-matching than isSome and valOf
 *)
 
