@@ -336,3 +336,30 @@ fun sum_cards(cs) =
 
 sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
 sum_cards [(Clubs, Num 10),(Clubs, Num 2)] = 12;
+
+(* (f) Write a function score, which takes a card list (the held-cards) 
+and an int (the goal) and computes the score as described above. *)
+
+(* - scoring: 
+    - sum: sum of the values of the held-cards
+    - sum > goal: preliminary score is three times (sum - goal)
+            else preliminary score is (goal - sum )
+    - score is preliminary score unless all the held-cards are the same color, 
+      in which case the score is the preliminary score divided by 2 
+      (rounded down as usual with integer division, using ML's "div" operator) 
+      *)
+
+fun preliminary_score(hc, goal) =
+  let val sum = sum_cards(hc)
+  in 
+    if (sum > goal) 
+    then 3 * (sum - goal)
+    else (goal - sum)
+  end 
+
+fun score(hc, goal) = 
+    if (all_same_color(hc))
+    then preliminary_score(hc, goal) div 2
+    else preliminary_score(hc, goal)
+
+score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4;
