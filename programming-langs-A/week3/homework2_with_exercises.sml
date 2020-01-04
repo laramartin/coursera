@@ -28,7 +28,7 @@ fun all_except_option (x, ys) =
                   else 
                     case (all_except_option(x, y')) of 
                       NONE => NONE
-                      | SOME z => SOME (y :: z)
+                      | SOME z => SOME (y :: z);
 
 
 all_except_option("a", []) = NONE;
@@ -65,7 +65,7 @@ fun get_substitutions1(x, y) =
     | x'::x'' => 
                     case all_except_option(y, x') of 
                       NONE => get_substitutions1(x'', y) 
-                      | SOME z => z @ get_substitutions1(x'', y)
+                      | SOME z => z @ get_substitutions1(x'', y);
 
   
 get_substitutions1([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], "Fred")
@@ -91,7 +91,7 @@ fun get_substitutions2(x, y) =
                       | SOME z => aux(x'', acc @ z)
   in 
     aux(x, [])
-  end
+  end;
 
 get_substitutions2([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], "Fred")
   = ["Fredrick","Freddie","F"];
@@ -128,8 +128,7 @@ fun process_names(n, y) =
   {first:string, middle:string, last:string} => 
     case n of
       [] => []
-      | n'::n'' => {first=n', middle=middle, last=last} :: process_names(n'', y)
- ;
+      | n'::n'' => {first=n', middle=middle, last=last} :: process_names(n'', y);
 
 (* string list list * name list -> *)
 fun similar_names(x, y) = 
@@ -213,7 +212,7 @@ fun card_color(c) =
      (Spades, _) => Black
      | (Clubs, _) => Black 
      | (Diamonds, _) => Red
-     | (Hearts, _) => Red
+     | (Hearts, _) => Red;
 
 
 (* (b) Write a function card_value, which takes a card and returns its value 
@@ -225,7 +224,7 @@ fun card_value(c) =
   case c of 
     (_, Num n) => n
     | (_, Ace) => 11
-    | (_, _) => 10
+    | (_, _) => 10;
 
 card_value(Clubs, Num 2) = 2;
 card_value(Spades, Ace) = 11;
@@ -241,7 +240,7 @@ the list, raise the exception e. You can compare cards with =.  *)
 fun is_same_card(c1, c2) = 
   case c1 of 
     (x, x') => case c2 of 
-                (y, y') => if (x, x') = (y, y') then true else false
+                (y, y') => if (x, x') = (y, y') then true else false;
 
 is_same_card((Hearts, Ace), (Hearts, Ace)) = true;
 is_same_card((Hearts, Ace), (Hearts, Num 1)) = false;
@@ -252,7 +251,7 @@ fun is_card_in_list(cs, c) =
     | x::[] => if is_same_card(x, c) then true else false
     | x::y => if is_same_card(x, c) 
                     then true
-                    else is_card_in_list(y,c)
+                    else is_card_in_list(y,c);
 
 is_card_in_list([], (Hearts, Ace)) = false;
 is_card_in_list([(Hearts, Ace)], (Hearts, Ace)) = true;
@@ -282,8 +281,8 @@ fun remove_card2(cs, c, e) =
 
 remove_card([(Hearts, Ace)], (Hearts, Ace), IllegalMove) = [];
 
-remove_card([], (Hearts, Ace), IllegalMove); (* = IllegalMove; *)
-remove_card([(Hearts, Ace)], (Clubs, Num 1), IllegalMove); (* = IllegalMove; *)
+(* remove_card([], (Hearts, Ace), IllegalMove); (* = IllegalMove; *)
+remove_card([(Hearts, Ace)], (Clubs, Num 1), IllegalMove); = IllegalMove; *)
 
 remove_card([(Hearts, Ace), (Clubs, Num 2), (Clubs, Num 2), (Clubs, Num 2)], (Hearts, Ace), IllegalMove) 
   = [(Clubs, Num 2), (Clubs, Num 2), (Clubs, Num 2)];
@@ -308,7 +307,7 @@ fun all_same_color(cs) =
                 [] => true  
                 | y'::y'' => if (card_color(x) = card_color(y'))
                             then all_same_color(y) 
-                            else false
+                            else false;
                 
 all_same_color [(Hearts, Ace), (Hearts, Ace)] = true;
 all_same_color [(Clubs, Ace), (Hearts, Ace)] = false;
@@ -329,9 +328,9 @@ fun sum_cards(cs) =
      | cs'::cs'' => aux(cs'', (acc + card_value(cs')))
   in
     aux(cs, 0)
-  end
+  end;
 
-sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
+sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4;
 sum_cards [(Clubs, Num 10),(Clubs, Num 2)] = 12;
 
 (* (f) Write a function score, which takes a card list (the held-cards) 
@@ -357,7 +356,7 @@ fun preliminary_score(hc, goal) =
 fun score(hc, goal) = 
     if (all_same_color(hc))
     then preliminary_score(hc, goal) div 2
-    else preliminary_score(hc, goal)
+    else preliminary_score(hc, goal);
 
 score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4;
 
@@ -380,32 +379,28 @@ is over (after drawing). Else play continues with a larger held-cards and a
 smaller card-list.
 Sample solution for (g) is under 20 lines.
 
-
-
-A game is played with a card-list and a goal. The player has a list of 
-held-cards, initially empty. The player makes a move by either drawing, 
-which means removing the first card in the card-list from the card-list and 
-adding it to the held-cards, or discarding, which means choosing one of the 
-held-cards to remove. The game ends either when the player chooses to make no 
-more moves or when the sum of the values of the held-cards is greater than the 
-goal.
  *)
  (* datatype move = Discard of card | Draw  *)
 
 
 (* returns score *)
+(* cs card list
+ms moves
+hcs held-card list *)
 fun officiate(cs, ms, goal) = 
-  (* let fun current_state(hcs, cs, ms, goal) =  *)
-    case ms of 
-      [] => score(hcs, goal) (* end game, calculate score *)
-      | ms'::ms'' => case ms' of 
-                    Discard x => current_state(remove_card(hcs, x, IllegalMove), cs, ms'', goal)
-                    | Draw => case cs of 
+  let fun current_state(hcs, cs', ms') = 
+    case ms' of 
+      [] => score(hcs, goal) (* end game, calculate score *) 
+      | ms''::ms''' => case ms'' of 
+                    Discard x => current_state(remove_card(hcs, x, IllegalMove), cs', ms''')
+                    | Draw => case cs' of 
                                 [] => score(hcs, goal) (*end game*)
-                                | cs'::cs'' => 
+                                | cs''::cs''' => 
                                     if (sum_cards(hcs) > goal)   
-                                    then score(cs'', goal)   (*end game*)                          
-                                    else current_state((hcs@cs') , cs'', ms'', goal)
+                                    then score(cs''', goal)   (*end game*)                          
+                                    else current_state((hcs@[cs'']) , cs''', ms''')
+  in 
+    current_state([], cs, ms)
+  end;
 
-
-  (* end  *)
+ val test11 = officiate ([(Hearts, Num 2),(Clubs, Num 4)],[Draw], 15) = 6
