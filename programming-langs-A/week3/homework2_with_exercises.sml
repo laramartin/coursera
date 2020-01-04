@@ -295,3 +295,26 @@ remove_card([(Hearts, Ace), (Clubs, Num 2), (Clubs, Num 2), (Clubs, Num 2)], (Cl
 
 remove_card([(Hearts, Ace), (Hearts, Ace)], (Hearts, Ace), IllegalMove) 
   = [(Hearts, Ace)];
+
+(* 
+
+(d) Write a function all_same_color, which takes a list of cards and returns 
+true if all the cards in the list are the same color. Hint: An elegant solution 
+is very similar to one of the functions using nested pattern-matching in the 
+lectures.
+ *)
+
+fun all_same_color(cs) =
+  case cs of 
+    [] => true
+    | x::y => case y of 
+                [] => true  
+                | y'::y'' => if (card_color(x) = card_color(y'))
+                            then all_same_color(y) 
+                            else false
+                
+all_same_color [(Hearts, Ace), (Hearts, Ace)] = true;
+all_same_color [(Clubs, Ace), (Hearts, Ace)] = false;
+all_same_color [] = true;
+all_same_color [(Clubs, Ace)] = true;
+all_same_color [(Clubs, Ace), (Clubs, Ace), (Clubs, Ace), (Clubs, Ace)] = true;
