@@ -266,9 +266,7 @@ the list, raise the exception e. You can compare cards with =.  *)
 fun remove_card(cs, c, e) =
     case cs of
     [] => raise e
-    | x::y => if x = c then y else x :: remove_card(y, c, e);
-   
-  
+    | x::y => if x = c then y else x :: remove_card(y, c, e);   
 
 (* (* errors: 
 - removes all instances of c in cs
@@ -297,7 +295,6 @@ remove_card([(Hearts, Ace), (Hearts, Ace)], (Hearts, Ace), IllegalMove)
   = [(Hearts, Ace)];
 
 (* 
-
 (d) Write a function all_same_color, which takes a list of cards and returns 
 true if all the cards in the list are the same color. Hint: An elegant solution 
 is very similar to one of the functions using nested pattern-matching in the 
@@ -363,3 +360,52 @@ fun score(hc, goal) =
     else preliminary_score(hc, goal)
 
 score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4;
+
+(* 
+(g) Write a function officiate, which “runs a game.” It takes a card list 
+(the card-list) a move list (what the player “does” at each point), and an int 
+(the goal) and returns the score at the end of the game after processing 
+(some or all of) the moves in the move list in order. Use a locally defined 
+recursive helper function that takes several arguments that together represent 
+the current state of the game. As described above:
+• The game starts with the held-cards being the empty list.
+• The game ends if there are no more moves. (The player chose to stop since 
+the move list is empty.)
+• If the player discards some card c, play continues (i.e., make a recursive 
+call) with the held-cards not having c and the card-list unchanged. If c is not
+ in the held-cards, raise the IllegalMove exception.
+• If the player draws and the card-list is (already) empty, the game is over. 
+Else if drawing causes the sum of the held-cards to exceed the goal, the game 
+is over (after drawing). Else play continues with a larger held-cards and a 
+smaller card-list.
+Sample solution for (g) is under 20 lines.
+
+
+
+A game is played with a card-list and a goal. The player has a list of 
+held-cards, initially empty. The player makes a move by either drawing, 
+which means removing the first card in the card-list from the card-list and 
+adding it to the held-cards, or discarding, which means choosing one of the 
+held-cards to remove. The game ends either when the player chooses to make no 
+more moves or when the sum of the values of the held-cards is greater than the 
+goal.
+ *)
+ (* datatype move = Discard of card | Draw  *)
+
+
+(* returns score *)
+fun officiate(cs, ms, goal) = 
+  (* let fun current_state(hcs, cs, ms, goal) =  *)
+    case ms of 
+      [] => score(hcs, goal) (* end game, calculate score *)
+      | ms'::ms'' => case ms' of 
+                    Discard x => current_state(remove_card(hcs, x, IllegalMove), cs, ms'', goal)
+                    | Draw => case cs of 
+                                [] => score(hcs, goal) (*end game*)
+                                | cs'::cs'' => 
+                                    if (sum_cards(hcs) > goal)   
+                                    then score(cs'', goal)   (*end game*)                          
+                                    else current_state((hcs@cs') , cs'', ms'', goal)
+
+
+  (* end  *)
