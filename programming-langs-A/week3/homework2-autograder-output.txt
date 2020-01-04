@@ -1,0 +1,5 @@
+officiate: Your function returns an incorrect result when the game should end due to the sum of cards in the player's hand exceeding the goal. [incorrect answer]
+3a tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission)
+3b tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission)
+
+Because the auto-grader gave a score above 80, here is the link to a message from a very cute dog: https://drive.google.com/file/d/0B5sUgbs6aDNpN2ppTUpyVDlQX0U/view?pref=2&pli=1

@@ -397,7 +397,7 @@ fun officiate(cs, ms, goal) =
                                 [] => score(hcs, goal) (*end game*)
                                 | cs''::cs''' => 
                                     if (sum_cards(hcs) > goal)   
-                                    then score(cs''', goal)   (*end game*)                          
+                                    then score(hcs, goal)   (*end game*)                          
                                     else current_state((hcs@[cs'']) , cs''', ms''')
   in 
     current_state([], cs, ms)
