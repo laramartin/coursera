@@ -183,3 +183,115 @@ datatype move = Discard of card | Draw
 exception IllegalMove
 
 (* put your solutions for problem 2 here *)
+
+(* 
+- game played with a s card list and a goal. 
+- held-cards is initially empty
+- user moves: 
+    1) drawing: removing the first card in the card-list and adding it to the 
+    held-cards
+    2) discarding: choosing one of the held-cards to remove
+- game ends:
+    1) player chooses to make no more moves
+    2) when the sum of the values of the held-cards is greater than the goal
+- objective: End the game with a low score. 0 is best .
+- scoring: 
+    - sum: sum of the values of the held-cards
+    - sum > goal: preliminary score is three times (sum - goal)
+      else preliminary score is (goal - sum )
+    - score is preliminary score unless all the held-cards are the same color, 
+      in which case the score is the preliminary score divided by 2 
+      (rounded down as usual with integer division, using ML's "div" operator)
+*)
+
+
+(* (a) Write a function card_color, which takes a card and returns its color (spades and clubs are black, diamonds 
+and hearts are red). Note: One case-expression is enough. *)
+
+fun card_color(c) = 
+   case c of 
+     (Spades, _) => Black
+     | (Clubs, _) => Black 
+     | (Diamonds, _) => Red
+     | (Hearts, _) => Red
+
+
+(* (b) Write a function card_value, which takes a card and returns its value 
+(numbered cards have their number as the value, aces are 11, everything else 
+is 10). Note: One case-expression is enough. *)
+
+(* datatype rank = Jack | Queen | King | Ace | Num of int  *)
+fun card_value(c) =
+  case c of 
+    (_, Num n) => n
+    | (_, Ace) => 11
+    | (_, _) => 10
+
+card_value(Clubs, Num 2) = 2;
+card_value(Spades, Ace) = 11;
+card_value(Hearts, Queen) = 10;
+card_value(Diamonds, King) = 10;
+card_value(Diamonds, Num 1) = 1;
+
+(* (c) Write a function remove_card, which takes a list of cards cs, a card c, 
+and an exception e. It returns a list that has all the elements of cs except c. 
+If c is in the list more than once, remove only the first one. If c is not in 
+the list, raise the exception e. You can compare cards with =.  *)
+
+fun is_same_card(c1, c2) = 
+  case c1 of 
+    (x, x') => case c2 of 
+                (y, y') => if (x, x') = (y, y') then true else false
+
+is_same_card((Hearts, Ace), (Hearts, Ace)) = true;
+is_same_card((Hearts, Ace), (Hearts, Num 1)) = false;
+
+fun is_card_in_list(cs, c) = 
+  case cs of 
+    [] => false
+    | x::[] => if is_same_card(x, c) then true else false
+    | x::y => if is_same_card(x, c) 
+                    then true
+                    else is_card_in_list(y,c)
+
+is_card_in_list([], (Hearts, Ace)) = false;
+is_card_in_list([(Hearts, Ace)], (Hearts, Ace)) = true;
+is_card_in_list([(Diamonds, Num 1), (Hearts, Ace)], (Hearts, Ace)) = true;
+is_card_in_list([(Diamonds, Num 1), (Diamonds, Num 1)], (Hearts, Ace)) = false; 
+
+(* (c) Write a function remove_card, which takes a list of cards cs, a card c, 
+and an exception e. It returns a list that has all the elements of cs except c. 
+If c is in the list more than once, remove only the first one. If c is not in 
+the list, raise the exception e. You can compare cards with =.  *)
+fun remove_card(cs, c, e) =
+    case cs of
+    [] => raise e
+    | x::y => if x = c then y else x :: remove_card(y, c, e);
+   
+  
+
+(* (* errors: 
+- removes all instances of c in cs
+- when reaching last item, raises e 
+ *)
+fun remove_card2(cs, c, e) =
+  case cs of 
+    [] => raise e 
+    | x::[] => if is_same_card(x, c) then [] else raise e 
+    | x::y =>  if is_same_card(x, c) 
+                    then remove_card(y, c, e)
+                    else (x :: remove_card(y, c, e)) *)
+
+remove_card([(Hearts, Ace)], (Hearts, Ace), IllegalMove) = [];
+
+remove_card([], (Hearts, Ace), IllegalMove); (* = IllegalMove; *)
+remove_card([(Hearts, Ace)], (Clubs, Num 1), IllegalMove); (* = IllegalMove; *)
+
+remove_card([(Hearts, Ace), (Clubs, Num 2), (Clubs, Num 2), (Clubs, Num 2)], (Hearts, Ace), IllegalMove) 
+  = [(Clubs, Num 2), (Clubs, Num 2), (Clubs, Num 2)];
+
+remove_card([(Hearts, Ace), (Clubs, Num 2), (Clubs, Num 2), (Clubs, Num 2)], (Clubs, Num 2), IllegalMove) 
+  = [(Hearts, Ace), (Clubs, Num 2), (Clubs, Num 2)];
+
+remove_card([(Hearts, Ace), (Hearts, Ace)], (Hearts, Ace), IllegalMove) 
+  = [(Hearts, Ace)];
