@@ -318,3 +318,21 @@ all_same_color [(Clubs, Ace), (Hearts, Ace)] = false;
 all_same_color [] = true;
 all_same_color [(Clubs, Ace)] = true;
 all_same_color [(Clubs, Ace), (Clubs, Ace), (Clubs, Ace), (Clubs, Ace)] = true;
+
+(* (e) Write a function sum_cards, which takes a list of cards and returns 
+the sum of their values. Use a locally defined helper function that is tail 
+recursive. (Take “calls use a constant amount of stack space” as a requirement 
+for this problem.) *)
+
+fun sum_cards(cs) =
+  let fun aux(cs, acc) =
+    case cs of 
+     [] => acc
+     | cs'::[] => acc + card_value(cs') 
+     | cs'::cs'' => aux(cs'', (acc + card_value(cs')))
+  in
+    aux(cs, 0)
+  end
+
+sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
+sum_cards [(Clubs, Num 10),(Clubs, Num 2)] = 12;
