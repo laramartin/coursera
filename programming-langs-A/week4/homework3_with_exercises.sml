@@ -35,3 +35,25 @@ datatype typ = Anything
 	     | Datatype of string
 
 (**** you can put all your code here ****)
+
+(* 
+1. Write a function only_capitals that takes a string list and returns a 
+string list that has only the strings in the argument that start with an 
+uppercase letter. Assume all strings have at least 1 character. Use List.filter,
+ Char.isUpper, and String.sub to make a 1-2 line solution.
+
+ - List.filter => filter f l applies f to each element x of l, from left to right, and returns the list of those x for which f x evaluated to true, in the same order as they occurred in the argument list.
+
+ - Char.isUpper => isUpper c returns true if c is an uppercase letter.
+
+ - String.sub => sub (s, i) returns the i(th) character of s, counting from zero. This raises Subscript if i < 0 or |s| <= i.
+ *)
+
+fun only_capitals(words) = 
+   List.filter (fn x => Char.isUpper (String.sub (x, 0))) words;
+  
+
+only_capitals ["A","B","C"] = ["A","B","C"];
+only_capitals ["a","b","c"] = [];
+only_capitals ["Abc"] = ["Abc"];
+only_capitals [] = [];
