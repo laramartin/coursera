@@ -50,3 +50,4 @@ fun f2 xs = fold((fn (x,y) => x andalso y>=0),
         0, xs)
 
 fun f4 (g,xs) = fold(fn (x,y) => x andalso g y), true, xs)
+
