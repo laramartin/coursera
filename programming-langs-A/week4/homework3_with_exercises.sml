@@ -81,3 +81,23 @@ longest_string1 ["A","bc","C"] = "bc";
 longest_string1 [] = "";
 longest_string1 ["a"] = "a";
 longest_string1 ["a", "b", "c"] = "a";
+
+(* 
+3. Write a function longest_string2 that is exactly like longest_string1 except 
+in the case of ties it returns the string closest to the end of the list. 
+Your solution should be almost an exact copy of longest_string1. Still 
+use foldl and String.size.
+ *)
+
+fun longest_string2 xs = 
+  List.foldl    
+        (fn(a,b) => if ((String.size a) = (String.size b)) then a 
+                    else if ((String.size a) > (String.size b)) then a 
+                    else b)
+        "" (* accumulator *)
+        xs; 
+
+longest_string2 ["A","bc","C"] = "bc";
+longest_string2 [] = "";
+longest_string2 ["a"] = "a";
+longest_string2 ["a", "b", "c"] = "c";
