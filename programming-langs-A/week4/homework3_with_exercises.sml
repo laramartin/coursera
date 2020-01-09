@@ -57,3 +57,27 @@ only_capitals ["A","B","C"] = ["A","B","C"];
 only_capitals ["a","b","c"] = [];
 only_capitals ["Abc"] = ["Abc"];
 only_capitals [] = [];
+
+(* 
+2. Write a function longest_string1 that takes a string list and returns the 
+longest string in the list. If the list is empty, return "". In the case of a 
+tie, return the string closest to the beginning of the list. Use foldl, 
+String.size, and no recursion (other than the implementation of foldl is 
+recursive).
+
+- foldl => List.foldl (op ^) "x" ["a","b","c"] = "cbax"
+
+- String.size => size s returns |s|, the number of characters in string s.
+String.size "Lara";
+val it = 4 : int
+ *)
+fun longest_string1 xs = 
+  List.foldl    
+        (fn(a,b) => if ((String.size a) > (String.size b)) then a else b ) 
+        "" (* accumulator *)
+        xs; 
+
+longest_string1 ["A","bc","C"] = "bc";
+longest_string1 [] = "";
+longest_string1 ["a"] = "a";
+longest_string1 ["a", "b", "c"] = "a";
