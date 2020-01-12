@@ -94,8 +94,8 @@ use foldl and String.size.
 (* fn : string list -> string *)
 fun longest_string2 xs = 
   List.foldl    
-        (fn(a,b) => if ((String.size a) = (String.size b)) then a 
-                    else if ((String.size a) > (String.size b)) then a 
+        (fn(a,b) => if ((String.size a) >= (String.size b)) 
+                    then a 
                     else b)
         "" (* accumulator *)
         xs; 
@@ -119,17 +119,37 @@ its second), then the function returned has the same behavior as longest_string1
 applications of longest_string_helper.
 *)
 
+(* int > int -> bool *)
 (* (int * int -> bool) -> string list -> string *)
-(* fun longest_string_helper =; *)
+fun longest_string_helper function = 
+    List.foldl    
+        (fn(a,b) => if (function (String.size a) (String.size b)) then a else b)
+        "";
+  
 
-(*)
+(* same as longest_string1 *)
+fun longest_string3 xs = 
+  let fun comparator a b = a > b
+  in 
+    longest_string_helper(comparator) xs
+  end;
+
 longest_string3 ["A","bc","C"] = "bc";
 longest_string3 [] = "";
 longest_string3 ["a"] = "a";
 longest_string3 ["a", "b", "c"] = "a";;
-*)
-(* val test4b = longest_string4 ["A","B","C"] = "C"; *)
 
+fun longest_string4 xs = 
+  let fun comparator a b = a >= b
+  in 
+    longest_string_helper(comparator) xs
+  end;
+
+longest_string4 ["A","B","C"] = "C";
+longest_string4 ["A","bc","C"] = "bc";
+longest_string4 [] = "";
+longest_string4 ["a"] = "a";
+longest_string4 ["a", "b", "c"] = "c";
 
 (* 5. Write a function longest_capitalized that takes a string list and returns 
 the longest string in the list that begins with an uppercase letter, or "" if 
