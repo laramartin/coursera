@@ -195,11 +195,38 @@ module. (Browse the module documentation to find the most useful functions.)
 
 fun rev_string str = (String.implode o List.rev o String.explode) str;
 
-
+(* 
 String.explode "abc" = [#"a", #"b", #"c"];
 List.rev [#"a", #"b", #"c"] = [#"c", #"b", #"a"];
-String.implode [#"c", #"b", #"a"] = "cba";
+String.implode [#"c", #"b", #"a"] = "cba"; *)
+
+
+(* 
+7. Write a function first_answer of type (’a -> ’b option) -> ’a list -> ’b 
+(notice the 2 arguments are curried). The first argument should be applied 
+to elements of the second argument in order until the first time it returns 
+SOME v for some v and then v is the result of the call to first_answer. If the 
+first argument returns NONE for all list elements, then first_answer should 
+raise the exception NoAnswer. Hints: Sample solution is 5 lines and does 
+nothing fancy.
+ *)
+
+(* (’a -> ’b option) -> ’a list -> ’b  *)
+
+fun first_answer (function) = 
+  fn list => 
+  case (List.foldl (fn (a, b) => case b of 
+                                    NONE => function a
+                                    | SOME v => SOME v
+                                    ) 
+                    NONE 
+                    list) of 
+                        NONE => raise NoAnswer  
+                        | SOME v => v;
+                                    
+first_answer (fn x => if x > 3 then SOME x else NONE) [1,2,3,4,5] = 4;
 
 (* 
 use "homework3_with_exercises.sml";
  *)
+ 
