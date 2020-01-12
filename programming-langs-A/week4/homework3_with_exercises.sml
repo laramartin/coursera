@@ -141,22 +141,26 @@ fun longest_capitalized xs =
   let fun isCapizalized x = (Char.isUpper (String.sub (x, 0)))
   in 
     List.foldl    
-            (fn(a,b) => if ((String.size a) = (String.size b)) 
+            (fn(a,b) => if isCapizalized a 
                         then 
-                            (if isCapizalized a 
-                            then a
-                            else if isCapizalized b 
+                            (if ((String.size a) > (String.size b)) 
+                            then a   
+                            else if isCapizalized b
                             then b
                             else "")
-                        else if ((String.size a) > (String.size b)) 
-                        then 
-                            (if isCapizalized a
-                            then a 
-                            else "")
-                        else b)
+                        else if isCapizalized b 
+                        then b 
+                        else "")
             "" (* accumulator *)
-            xs  
+            xs
   end;
 
 longest_capitalized ["A","bc","C"] = "A";
 longest_capitalized ["A","BB","C"] = "BB";
+longest_capitalized [] = "";
+
+
+
+(* 
+use "homework3_with_exercises.sml";
+ *)
