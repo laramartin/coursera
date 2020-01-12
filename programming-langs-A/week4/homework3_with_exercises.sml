@@ -159,7 +159,26 @@ longest_capitalized ["A","bc","C"] = "A";
 longest_capitalized ["A","BB","C"] = "BB";
 longest_capitalized [] = "";
 
+(* 
+6. Write a function rev_string that takes a string and returns the string that 
+is the same characters in reverse order. Use ML’s o operator, the library 
+function rev for reversing lists, and two library functions in the String 
+module. (Browse the module documentation to find the most useful functions.)
+ *)
 
+(* 
+- input                                                 "abc"
+- split string in char list with String.explode         [#"a", #"b", #"c"]
+- List.rev                                              [#"c", #"b", #"a"]
+- concat all with String.implode                        "cba"                  
+ *)
+
+fun rev_string str = (String.implode o List.rev o String.explode) str;
+
+
+String.explode "abc" = [#"a", #"b", #"c"];
+List.rev [#"a", #"b", #"c"] = [#"c", #"b", #"a"];
+String.implode [#"c", #"b", #"a"] = "cba";
 
 (* 
 use "homework3_with_exercises.sml";
