@@ -250,7 +250,7 @@ Note all_answers f [] should evaluate to SOME [].
             aux(list, NONE)
         end; *)
 
-fun all_answers (function) =
+(* fun all_answers (function) =
     fn list => 
         let val result =
             List.foldl 
@@ -271,13 +271,8 @@ fun all_answers (function) =
                 case result of 
                     NONE => NONE
                     | SOME v => SOME v
-            end
+            end *)
             
-            (* case (List.foldl (function list) aux(list, acc @ x') list) of 
-                                    NONE => NONE
-                                    | SOME v => SOME v *)
-        
-
 
 (* all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7] = NONE;
 all_answers f [] = SOME []; *)
@@ -286,6 +281,71 @@ all_answers f [] = SOME []; *)
 fun bla f = fn x => f x;
 val bla = fn : ('a -> 'b) -> 'a -> 'b 
 *)
+
+
+(* 
+
+The remaining problems use these type definitions, which are inspired by the type 
+definitions an ML imple- mentation would use to implement pattern matching:
+
+datatype pattern = Wildcard | Variable of string | UnitP | ConstP of int
+                 | TupleP of pattern list | ConstructorP of string * pattern
+datatype valu = Const of int | Unit | Tuple of valu list | Constructor of string * valu 
+
+Given valu v and pattern p, either p matches v or not. If it does, the match produces a list of string * valu
+pairs; order in the list does not matter. The rules for matching should be unsurprising:
+• Wildcard matches everything and produces the empty list of bindings.
+• Variable s matches any value v and produces the one-element list holding (s,v).
+• UnitP matches only Unit and produces the empty list of bindings.
+• ConstP 17 matches only Const 17 and produces the empty list of bindings (and similarly for other integers).
+• TupleP ps matches a value of the form Tuple vs if ps and vs have the same length 
+and for all i, the ith element of ps matches the ith element of vs. The list of 
+bindings produced is all the lists from the nested pattern matches appended together.
+• ConstructorP(s1,p) matches Constructor(s2,v) if s1 and s2 are the same string 
+(you can compare them with =) and p matches v. The list of bindings produced is 
+the list from the nested pattern match. We call the strings s1 and s2 the constructor name.
+• Nothing else matches.
+
+ *)
+
+(* 
+
+9. (This problem uses the pattern datatype but is not really about pattern-matching.) A function g has
+been provided to you.
+
+(a) Use g to define a function count_wildcards that takes a pattern and returns 
+how many Wildcard patterns it contains.
+
+fun g f1 f2 p =
+    let 
+    	val r = g f1 f2 
+    in
+	case p of
+	    Wildcard          => f1 ()
+	  | Variable x        => f2 x
+	  | TupleP ps         => List.foldl (fn (p,i) => (r p) + i) 0 ps
+	  | ConstructorP(_,p) => r p
+	  | _                 => 0
+    end
+*)
+
+fun count_wildcards p =
+    g (fn _ => 1) (fn _ => 0) p;
+
+count_wildcards Wildcard = 1;
+
+(*
+(b) Use g to define a function count_wild_and_variable_lengths that takes a pattern 
+and returns the number of Wildcard patterns it contains plus the sum of the string 
+lengths of all the variables in the variable patterns it contains. 
+(Use String.size. We care only about variable names; the constructor names are 
+not relevant.)
+*)
+(*
+(c) Use g to define a function count_some_var that takes a string and a pattern 
+(as a pair) and returns the number of times the string appears as a variable in 
+the pattern. We care only about variable names; the constructor names are not relevant.
+ *)
 
 
 (* 
